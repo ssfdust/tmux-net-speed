@@ -8,9 +8,15 @@ download_speed_format=$(get_tmux_option @download_speed_format "%7s")
 
 upload_speed="#($SDIR/scripts/net-speed.sh   tx_bytes $(upload_speed_format))"
 download_speed="#($SDIR/scripts/net-speed.sh rx_bytes $(download_speed_format))"
+ip="#($SDIR/scripts/lanip.sh)"
+mailct="#($SDIR/scripts/mailcount.sh)"
+weather="#($SDIR/scripts/weather.sh)"
 
 upload_interpolation="\#{upload_speed}"
 download_interpolation="\#{download_speed}"
+ip_interpolation="\#{ip_addr}"
+mailct_interpolation="\#{mailcount}"
+weather_interpolation="\#{weather}"
 
 do_interpolation() {
     local input=$1
@@ -18,6 +24,12 @@ do_interpolation() {
 
     result=${input/$upload_interpolation/$upload_speed}
     result=${result/$download_interpolation/$download_speed}
+    result=${result/$ip_interpolation/$ip}
+    result=${result/$mailct_interpolation/$mailct}
+    result=${result/$weather_interpolation/$weather}
+    if [[ "$result" == *"weather"* ]];then
+        echo "$result" > /tmp/res1
+    fi
 
     echo "$result"
 }
